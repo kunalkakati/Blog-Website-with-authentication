@@ -1,0 +1,14 @@
+<%- include("header"); -%>
+<% posts.forEach(function(post){ %>
+   
+        <h1 style="display: inline-block;"><%= post.tittle%></h1>
+        <p class="time"><%= post.time %></p>
+        <% const peragraph = post.content.slice(0, 100); %>
+        <p><%= peragraph %> <a class="read_more" href="/post/<%= post._id %>">Read more...</a> </p>
+        <form action="/delete" method="POST">
+         <input type="submit" class="delete" value="Delete">
+        <input type="hidden" value="<%= post._id %>" name="docID">
+        </form>
+        <hr>
+    <%});%>
+<%- include("footer"); -%>

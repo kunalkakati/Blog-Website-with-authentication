@@ -1,0 +1,17 @@
+<%- include("header"); -%>
+<h1>Compose</h1>
+<form action="/compose" method="POST">
+    <div class="mb-3">
+        <label  class="form-label">Tittle</label>
+        <input  type="text" name="textTittle" class="form-control" id="exampleFormControlInput1" placeholder="Title..">
+      </div>
+      <div class="mb-3">
+        <label  class="form-label">Content</label>
+        <textarea type="text" name="textContant" class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="Type here..."></textarea>
+      </div>
+      <button class="btn btn-primary" type="submit">Publish</button>
+
+
+    <!-- <input type="text" name="textInput"> -->
+</form>
+<%- include("footer"); -%>

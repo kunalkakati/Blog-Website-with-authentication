@@ -1,0 +1,257 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500&display=swap');
+
+body{
+    padding: 0;
+    margin: 0;
+    font-family: sans-serif;
+    padding: 3% 7%;
+}
+
+/* >>>>>>>>>>>>Home_page>>>>>>>>>>>>>>>> */
+
+/* logo */
+.logo{
+    font-weight: 600;
+    font-size: 1.5rem;
+    color: #333;
+}
+
+.logo i{
+    height: 30px;
+    width: 40px;
+    font-size: 1.8rem;
+    color: red;
+}
+/* >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
+
+
+/* navbar link */
+.nav li{
+    display: inline;
+    padding-left: 70px;
+}
+
+.nav li a{
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #333;
+    text-decoration: none;
+}
+
+.nav li a:hover{
+    color: #0779e4;
+}
+
+.nav-btn{
+    position: absolute;
+    top: 63px;
+    left: 569px;
+}
+/* >>>>>>>>>>>>>>>>>>>>> */
+
+/* singup-singin button */
+.singin-singup{
+    position: absolute;
+    top: 80px;
+    left: 1170px;
+    
+}
+
+.singin-singup a{
+    margin-left: 8px;
+    text-decoration: none;
+    border: 2px solid #0779e4;
+    padding: 10px 17px;
+    border-radius: 4px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    transition:1.3s;
+}
+
+.singin-singup a:hover{
+    border-color: #0dd6b1;
+}
+
+.singin-singup a:focus{
+    padding: 9px 16px;
+    color: #0779e4;
+}
+
+a.singup{
+    background: #0779e4;
+    color: #fff;
+    transition: 1.3s;
+}
+
+a.singup:hover{
+    background: #0dd6b1;
+    color: black;
+}
+
+a.singup:focus{
+    color: #fff;
+    background: cornflowerblue;
+}
+/* >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
+/* body */
+
+/* hading and content */
+.content{
+    width: 50%;
+    margin-top: 200px;
+}
+
+.content h1{
+    margin-bottom: 7px;
+    letter-spacing: 1px;
+   font-size: 3rem;
+}
+
+.container h2{
+    margin-top: -9px;
+    font-size: 2rem;
+}
+
+.content p{
+    max-width:67%;
+    line-height: 1.5;
+    font-weight: 500;
+    font-size: 1.2rem;
+    color: #393e46;
+    margin-bottom: 30px;
+}
+
+.content a{
+    border: 1px solid #0779e4;
+    padding: 12px 30px;
+    background-color: #0779e4;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 4px;
+   transition: 1s;
+}
+
+.content a:hover{
+    background-color: #0dd6b1;
+    color: black;
+}
+
+.content a:focus{
+    padding: 11px 29px;
+    background: cornflowerblue;
+}
+/* >>>>>>>>>>>>>>>>>>>> */
+
+/* image */
+
+.image{
+    position: absolute;
+    top: 190px;
+    left: 800px;
+    font-weight: 400px;
+}
+
+.image img{
+    width: 70%;
+    height: 50%;
+}
+
+/* >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
+
+
+
+
+.space{
+    padding: 3% 7%;
+}
+
+.navbar-brand{
+    font-size: 3rem;
+}
+
+.nav-item a {
+    font-size: 1.1rem;
+    margin-left: 17px;
+    color: #0dd6b1;
+    letter-spacing: 2px;
+    transition: 2s;
+    
+}
+
+
+.nav-item a:hover {
+    border-radius: 5px;
+    background-color: black;
+    color: rgb(23, 240, 131);
+}
+
+/* Body */
+
+.contnainer {
+    margin: 5px 0;
+}
+
+.brand a {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.time {
+   float: right;
+   padding-top: 20px;
+}
+
+/* post */
+.post{
+    padding: 5% 14%;
+    
+}
+
+.read_more {
+    text-decoration: none;
+    color: rgb(133, 162, 241);
+}
+
+.read_more:hover{
+    text-decoration: underline;
+}
+
+/* delete */
+
+.delete{
+    text-decoration: none;
+    padding: 3px;
+    border:1px solid #0779e4;
+    border-radius: 2px;
+    background: none;
+}
+
+.delete:hover{
+    background-color: #0779e4;
+    color: #fff;
+}
+
+/* footer */
+.footer {
+    position: fixed;
+    font-family: "Montserrat" serif;
+    background-image: linear-gradient(to bottom right,rgb(28, 28, 43),black);
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 50px;
+    text-align: center;
+    color: #fff;
+}
+
+.footer p {
+    font-size: 1rem;
+    margin-top: 12px;
+}
+
+.footer p:hover{
+    
+    color:rgb(23, 240, 131);
+}
