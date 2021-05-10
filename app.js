@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const bodyparser = require("body-parser");
 const ejs = require("ejs");
@@ -5,8 +6,9 @@ const _ = require("lodash");
 const mongoose = require("mongoose");
 const about = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.";
 // Password
-const bcrypt = require("bcrypt");
-const salt = 10;
+const session = require("express-session");
+const passport = require("passport");
+const PassportLocalMongoose = require("passport-local-mongoose");
 
 
 // real time
@@ -22,18 +24,30 @@ function updateTime(){
     return currentDate;
 };
 setInterval(updateTime, 1000);
+const time = updateTime();
 
 const app = express();
 app.use(bodyparser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 app.use(express.static("public"));
-const time = updateTime();
 
+// console.log(process.env.SECRET);
+app.use(session({
+    secret: process.env.SECRET,
+    resave: false,
+    saveUninitialized: false
+}));
+
+//Initialize passport.
+app.use(passport.initialize());
+//tell passport to deal with session.
+app.use(passport.session());
 
 // Database
-mongoose.connect("mongodb://localhost:27017/BlogDB", {useNewUrlParser: true,useUnifiedTopology: true})
+mongoose.connect("mongodb://localhost:27017/BlogDB", {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify:false})
 mongoose.set('useCreateIndex', true);
 
+    //User data schema
     const Schema = new mongoose.Schema({
         tittle: String,
         time: String,
@@ -42,43 +56,67 @@ mongoose.set('useCreateIndex', true);
     //collection
     const Blog = mongoose.model("blog", Schema);
 
+    //security schema
     const UserSchema = new mongoose.Schema({
         Username: String,
         email: String,
         password: String,
         googleID: String
     });
-
-
+    //use hash and salt password and save into mongodb database. 
+    UserSchema.plugin(PassportLocalMongoose);
+    // collection usename password etc.
     const User = mongoose.model("blog_password", UserSchema);
 
-   /*   let blog1 = new Blog ({
-        tittle: "Day1",
-        time: time,
-        content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remainin"
-    });
-    blog1.save();  */
+    //only need when we use session.
+    //this only work on pass-local-mongoose, if you use passport-local its different.
+    passport.use(User.createStrategy()); 
+    //create a cookie and put info
+    passport.serializeUser(function(user, done) {
+        done(null, user.id);
+      });
+    // crumble the cookie and to discover what is inside
+    passport.deserializeUser(function(id, done) {
+        User.findById(id, function(err, user) {
+          done(err, user);
+        });
+      });
+    
 
 app.get("/", (req,res)=>{
-    res.sendFile(__dirname + "/home.html");
+    if(req.isAuthenticated()){
+        res.redirect("/home");
+    }else{
+        res.sendFile(__dirname + "/home.html");
+    }
 });
 
 app.get("/home", function(req,res){
     //find all data saved in database and pass into home.ejs
-    Blog.find({}, function(err,doc){
-        if(err){
-            console.log("Error on find method" + err);
-        }
-        else{
-            res.render("home", {posts: doc});
-        }
-    });
+    if(req.isAuthenticated()){
+        Blog.find({}, function(err,doc){
+            if(err){
+                console.log("Error on find method" + err);
+            }
+            else{
+                res.render("home", {posts: doc});
+            }
+        });
+    }else{
+        res.redirect("/login");
+    }
     
 });
 
 //About page
 app.get("/about", (req,res)=>{
-    res.render("about", {header: "About", pera: about});
+    
+    if(req.isAuthenticated()){
+        res.render("about", {header: "About", pera: about});
+    }else{
+        res.redirect("/login");
+    }
+
 });
 //contect page
 app.get("/contact", (req,res)=>{
@@ -93,43 +131,47 @@ app.get("/login",(req,res)=>{
     res.render("login");
 });
 
+app.get("/logout", (req,res)=>{
+    req.logout();
+    res.redirect("/");
+});
+
 app.get("/register", (req,res)=>{
     res.render("register");
 });
 
 app.post("/register", (req,res)=>{
-    bcrypt.hash(req.body.password, salt, function(err,hash){
-        if(!err){
-            const userData = new User({
-                Username: req.body.username,
-                email: req.body.email,
-                password: hash
-            });
-            userData.save(function(err){
-                if(err){
-                    console.log("err on save method");
-                }
-            });
-        }else{
-            console.log(err);
-        }
-    });
-    res.redirect("/home");
+// comes from local passport mongoose.
+   User.register({username: req.body.username, email: req.body.email},req.body.password, function(err,resl){
+       if(err){
+           console.log(err);
+           res.redirect("/register");
+       }else{
+           passport.authenticate("local")(req,res, ()=>{
+               res.redirect("/home");
+           });
+       }
+   });
 });
 
 app.post("/login", (req,res)=>{
-    User.findOne({Username: req.body.username}, function(err, doc){
-        if(!err){
-            bcrypt.compare(req.body.password, doc.password, function(err,resl){
-                if(resl === true){
-                    res.redirect("/home");
-                }else{
-                    res.redirect("/register");
-                }
-            });
+   
+   const log = new User({
+        Username: req.body.username,
+        password: req.body.password
+   });
+
+   req.logIn(log, function(err){
+        if(err){
+            console.log(err);
+            // res.redirect("/register");
+        }else{
+           passport.authenticate("local")(req,res, ()=>{
+               res.redirect("/home");
+           });
         }
-    })
-})
+   });
+});
 
 //data back from compose page
 app.post("/compose", (req,res)=>{    

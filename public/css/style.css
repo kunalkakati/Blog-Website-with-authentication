@@ -40,7 +40,7 @@ body{
 }
 
 .nav li a:hover{
-    color: #0779e4;
+    color: #0ee407;
 }
 
 .nav-btn{
@@ -179,12 +179,13 @@ a.singup:focus{
     
 }
 
-
 .nav-item a:hover {
     border-radius: 5px;
     background-color: black;
-    color: rgb(23, 240, 131);
+    color: rgb(6, 252, 129);
 }
+
+
 
 /* Body */
 
@@ -222,14 +223,15 @@ a.singup:focus{
 .delete{
     text-decoration: none;
     padding: 3px;
-    border:1px solid #0779e4;
+    border:1px solid #0d0d0e;
     border-radius: 2px;
     background: none;
+    transition: 1s;
 }
 
 .delete:hover{
-    background-color: #0779e4;
-    color: #fff;
+    background-color: black;
+    color: rgb(6, 247, 18);
 }
 
 /* footer */
