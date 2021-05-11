@@ -9,6 +9,9 @@ const about = "Lorem Ipsum is simply dummy text of the printing and typesetting 
 const session = require("express-session");
 const passport = require("passport");
 const PassportLocalMongoose = require("passport-local-mongoose");
+//Google AOuth.
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
+const findOrCreate = require("mongoose-findorcreate");
 
 
 // real time
@@ -61,10 +64,12 @@ mongoose.set('useCreateIndex', true);
         Username: String,
         email: String,
         password: String,
-        googleID: String
+        googleId: String
     });
     //use hash and salt password and save into mongodb database. 
     UserSchema.plugin(PassportLocalMongoose);
+    //use as a plugin findOrCreate dependencies
+    UserSchema.plugin(findOrCreate);
     // collection usename password etc.
     const User = mongoose.model("blog_password", UserSchema);
 
@@ -81,7 +86,19 @@ mongoose.set('useCreateIndex', true);
           done(err, user);
         });
       });
-    
+      
+      passport.use(new GoogleStrategy({
+        clientID: process.env.CLIENT_ID,
+        clientSecret: process.env.CLIENT_SECRET,
+        callbackURL: "http://localhost:3000/auth/google/Blog"
+      },
+      function(accessToken, refreshToken, profile, cb) {
+          console.log(profile);
+        User.findOrCreate({ googleId: profile.id }, function (err, user) {
+          return cb(err, user);
+        });
+      }
+    ));
 
 app.get("/", (req,res)=>{
     if(req.isAuthenticated()){
@@ -108,15 +125,20 @@ app.get("/home", function(req,res){
     
 });
 
+//Google strategy
+app.get("/auth/google",
+  passport.authenticate('google', { scope: ["profile"] }));
+
+app.get("/auth/google/Blog", 
+  passport.authenticate("google", { failureRedirect: '/login' }),
+  function(req, res) {
+    // Successful authentication, redirect home.
+    res.redirect('/home');
+  });
+
 //About page
 app.get("/about", (req,res)=>{
-    
-    if(req.isAuthenticated()){
         res.render("about", {header: "About", pera: about});
-    }else{
-        res.redirect("/login");
-    }
-
 });
 //contect page
 app.get("/contact", (req,res)=>{
